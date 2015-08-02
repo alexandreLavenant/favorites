@@ -1,0 +1,25 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  padding-top: 50px;
+  font-size: 16px;
+  overflow-y:hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.title {
+	text-align: center;
+	font-weight: 700;
+}
+
+span{
+  padding-left: 5px;
+}
+
+span.glyphicon-remove{
+  padding-left: 15px;
+}
+
+th a, th a:hover, th a:active {
+	color: #2372BD;
+}
