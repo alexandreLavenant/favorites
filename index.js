@@ -26,16 +26,19 @@ server.listen(port);
 console.log('server listen on '+port);
 
 //data
-db.find({}, function(err, docs)
-{
-	if(err) console.error(err);
-	else links = docs;
-	// console.log(links);
-});
+
 
 io.on('connection', function (socket)
 {
-	socket.emit('getLinks', links);
+	socket.on('get links', function()
+	{
+		db.find({}, function(err, docs)
+		{
+			if(err) console.error(err);
+			else socket.emit('links', docs);
+		});
+	})
+	;
 
 	socket.on('save', function(url)
 	{

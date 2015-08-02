@@ -2,7 +2,7 @@
 var socket = io.connect('http://localhost:8080');
 
 // render table
-socket.on('getLinks', function(datas)
+socket.on('links', function(datas)
 {
 	var records = [];
 
@@ -40,11 +40,15 @@ socket.on('message', function(data)
 {
 	$(document).ready(function()
 	{
+		socket.emit('get links');
+
 		$('#save').click(function(e)
 		{
 			e.preventDefault();
 			var url = $('#url').val();
 			socket.emit('save', url);
+			//update table
+			// socket.emit('get links');
 		})
 		;
 
