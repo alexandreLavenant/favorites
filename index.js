@@ -4,12 +4,40 @@ var express = require('express')
 	,request = require('request')
 	,cheerio = require('cheerio')
 	,Datastore = require('nedb')
-	,util = require('./util')
 	,server = require('http').Server(app)
 	,io = require('socket.io')(server)
 	,db = new Datastore({ filename: 'data/links', autoload: true })
 	,links = null
 	,port = 8080
+	/**
+	 * get date from epoch time
+	 * @param  {number} epoch format time
+	 * @return {string}       date format dd/mm/yyyy
+	 */
+	,getDate = function(epoch)
+		{
+					var date = new Date(epoch);
+
+					var day = '0'+date.getDate();
+					var month = '0'+(date.getMonth()+1);
+					var year = date.getFullYear();
+
+					return day.substr(-2)+'/'+month.substr(-2)+'/'+year;
+		}
+	/**
+	 * get time from epoch time format
+	 * @param  {number} epoch format time
+	 * @return {string}       time format hh/mm/ss
+	 */
+	,getTime = function(epoch)
+		{
+			var date = new Date(epoch);
+			var seconds = '0'+date.getSeconds();
+			var minutes = '0'+date.getMinutes();
+			var hours = date.getHours();
+
+			return hours+':'+minutes.substr(-2)+':'+seconds.substr(-2);
+		}
 	;
 
 // set the view engine to ejs
@@ -26,8 +54,6 @@ server.listen(port);
 console.log('server listen on '+port);
 
 //data
-
-
 io.on('connection', function (socket)
 {
 	socket.on('get links', function()
@@ -57,8 +83,8 @@ io.on('connection', function (socket)
 					{
 						title : title
 						,description : description
-						,date : util.getDate(Date.now())
-						,time : util.getTime(Date.now())
+						,date : getDate(Date.now())
+						,time : getTime(Date.now())
 						,link : url
 					}
 					;

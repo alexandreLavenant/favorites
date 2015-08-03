@@ -10,8 +10,8 @@ socket.on('links', function(datas)
 	{
 		var data =
 		{
-			title : collapseText(datas[i].title, 15, i)
-			,description : collapseText(datas[i].description, 15, i)
+			title : collapseText(datas[i].title, 15, 'collaspeTitle'+i)
+			,description : collapseText(datas[i].description, 15, 'collapseDesc'+i)
 			,date : datas[i].date
 			,time : datas[i].time
 			,link : '<a href="'+datas[i].link+'" target="about:blank"><span class="glyphicon glyphicon-play-circle"></span></a>'
