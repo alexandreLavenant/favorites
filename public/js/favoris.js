@@ -79,8 +79,6 @@ socket.on('message', function(data)
 			e.preventDefault();
 			var url = $('#url').val();
 			socket.emit('save', url);
-			//update table
-			socket.emit('update request');
 		})
 		;
 
@@ -88,8 +86,6 @@ socket.on('message', function(data)
 		{
 			var link = $(this).closest('tr').children('td:eq(4)').find('a').attr('href');
 			socket.emit('remove', link);
-			//update table
-			socket.emit('update request');
 		})
 		;
 	})

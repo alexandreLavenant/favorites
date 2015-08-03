@@ -74,12 +74,6 @@ io.on('connection', function (socket)
 	})
 	;
 
-	socket.on('update request', function()
-	{
-		update(socket);
-	})
-	;
-
 	socket.on('save', function(url)
 	{
 		request(url, function(error, response, body)
@@ -106,7 +100,12 @@ io.on('connection', function (socket)
 					db.update({ link : url }, data, {upsert : true}, function(err, numReplaced, upsert)
 					{
 						if(err) socket.emit('message', { type : 'danger', message : JSON.stringify(err) });
-						if(upsert) socket.emit('message', { type : 'success', message : 'Url <strong>'+url+'</strong> saved' });
+						if(upsert)
+						{
+							socket.emit('message', { type : 'success', message : 'Url <strong>'+url+'</strong> saved' });
+							//update table
+							update(socket);
+						}
 						else socket.emit('message', { type : 'warning', message : 'Url <strong>'+url+'</strong> already in db' });
 					})
 					;
@@ -121,7 +120,12 @@ io.on('connection', function (socket)
 		db.remove({link : link}, {}, function(err, numReplaced)
 		{
 			if(err) socket.emit('message', {type : 'danger', message : JSON.stringify(err)});
-			if(numReplaced > 0) socket.emit('message', {type : 'success', message : 'Url <strong>'+link+'</strong> removed'});
+			if(numReplaced > 0)
+			{
+				socket.emit('message', {type : 'success', message : 'Url <strong>'+link+'</strong> removed'});
+				// update table
+				update(socket);
+			}
 		})
 		;
 	})
