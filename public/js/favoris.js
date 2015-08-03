@@ -14,8 +14,8 @@ socket.on('links', function(datas)
 			,description : collapseText(datas[i].description, 15, 'collapseDesc'+i)
 			,date : datas[i].date
 			,time : datas[i].time
-			,link : '<a href="'+datas[i].link+'" target="about:blank"><span class="glyphicon glyphicon-play-circle"></span></a>'
-			,remove : '<a class="remove" href="#"><span class="glyphicon glyphicon-remove"></span></a>'
+			,link : '<a href="'+datas[i].link+'" target="about:blank" title="go to '+datas[i].title+'"><span class="glyphicon glyphicon-play-circle"></span></a>'
+			,action : '<a class="remove" href="#" title="remove"><span class="glyphicon glyphicon-remove"></span></a>'
 		};
 
 		records.push(data);
