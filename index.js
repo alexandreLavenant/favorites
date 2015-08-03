@@ -14,7 +14,7 @@ var express = require('express')
 	 * @param  {number} epoch format time
 	 * @return {string}       date format dd/mm/yyyy
 	 */
-	,getDate = function(epoch)
+	, getDate = function(epoch)
 		{
 					var date = new Date(epoch);
 
@@ -29,7 +29,7 @@ var express = require('express')
 	 * @param  {number} epoch format time
 	 * @return {string}       time format hh/mm/ss
 	 */
-	,getTime = function(epoch)
+	, getTime = function(epoch)
 		{
 			var date = new Date(epoch);
 			var seconds = '0'+date.getSeconds();
@@ -38,6 +38,14 @@ var express = require('express')
 
 			return hours+':'+minutes.substr(-2)+':'+seconds.substr(-2);
 		}
+	, update = function(socket)
+	{
+		db.find({}, function(err, docs)
+		{
+			if(err) console.error(err);
+			else socket.emit('update', docs);
+		});
+	}
 	;
 
 // set the view engine to ejs
@@ -53,7 +61,7 @@ app.use(express.static('public'));
 server.listen(port);
 console.log('server listen on '+port);
 
-//data
+// socket.io, communication between server and client
 io.on('connection', function (socket)
 {
 	socket.on('get links', function()
@@ -63,6 +71,12 @@ io.on('connection', function (socket)
 			if(err) console.error(err);
 			else socket.emit('links', docs);
 		});
+	})
+	;
+
+	socket.on('update request', function()
+	{
+		update(socket);
 	})
 	;
 
@@ -88,10 +102,10 @@ io.on('connection', function (socket)
 						,link : url
 					}
 					;
-
+					if(typeof data.description === 'undefined') data.description = "None";
 					db.update({ link : url }, data, {upsert : true}, function(err, numReplaced, upsert)
 					{
-						if(err) console.log(err); socket.emit('message', { type : 'danger', message : JSON.stringify(err) });
+						if(err) socket.emit('message', { type : 'danger', message : JSON.stringify(err) });
 						if(upsert) socket.emit('message', { type : 'success', message : 'Url <strong>'+url+'</strong> saved' });
 						else socket.emit('message', { type : 'warning', message : 'Url <strong>'+url+'</strong> already in db' });
 					})
@@ -102,12 +116,12 @@ io.on('connection', function (socket)
 	})
 	;
 
-	socket.on('remove', function(title)
+	socket.on('remove', function(link)
 	{
-		db.delete({title : title}, {}, function(err, numReplaced)
+		db.remove({link : link}, {}, function(err, numReplaced)
 		{
-			if(err) socket.emit('message', {type : 'success', message : JSON.stringify(err)});
-			if(numReplaced > 0) socket.emit('message', {type : 'success', message : 'Url <strong>'+url+'</strong> removed'});
+			if(err) socket.emit('message', {type : 'danger', message : JSON.stringify(err)});
+			if(numReplaced > 0) socket.emit('message', {type : 'success', message : 'Url <strong>'+link+'</strong> removed'});
 		})
 		;
 	})
