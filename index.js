@@ -1,12 +1,13 @@
 /* jshint laxcomma : true */
 var express = require('express')
 	,app = express()
+	,args = process.argv.slice(2)
 	,request = require('request')
 	,cheerio = require('cheerio')
 	,Datastore = require('nedb')
 	,server = require('http').Server(app)
 	,io = require('socket.io')(server)
-	,db = new Datastore({ filename: 'data/links', autoload: true })
+	,db = new Datastore({ filename: 'data/'+(args[0]? args[0] : 'links'), autoload: true })
 	,links = null
 	,port = 8080
 	/**
@@ -47,7 +48,6 @@ var express = require('express')
 		});
 	}
 	;
-
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
