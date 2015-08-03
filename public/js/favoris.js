@@ -10,8 +10,8 @@ var socket = io.connect('http://localhost:8080')
 		{
 			var data =
 			{
-				title : collapseText(datas[i].title, 15, 'collaspeTitle'+i)
-				,description : collapseText(datas[i].description, 15, 'collapseDesc'+i)
+				title : collapseText(datas[i].title, 35, 'collaspeTitle'+i)
+				,description : collapseText(datas[i].description, 20, 'collapseDesc'+i)
 				,date : datas[i].date
 				,time : datas[i].time
 				,link : '<a href="'+datas[i].link+'" target="about:blank" title="go to '+datas[i].title+'"><span class="glyphicon glyphicon-play-circle"></span></a>'
@@ -34,8 +34,8 @@ socket.on('links', function(datas)
 	{
 		var data =
 		{
-			title : collapseText(datas[i].title, 15, 'collaspeTitle'+i)
-			,description : collapseText(datas[i].description, 15, 'collapseDesc'+i)
+			title : collapseText(datas[i].title, 35, 'collaspeTitle'+i)
+			,description : collapseText(datas[i].description, 20, 'collapseDesc'+i)
 			,date : datas[i].date
 			,time : datas[i].time
 			,link : '<a href="'+datas[i].link+'" target="about:blank" title="go to '+datas[i].title+'"><span class="glyphicon glyphicon-play-circle"></span></a>'
