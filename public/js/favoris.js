@@ -20,7 +20,6 @@ var socket = io.connect('http://localhost:8080')
 
 			records.push(data);
 		}
-		console.log('ok');
 		dynatable.settings.dataset.originalRecords = records;
 		dynatable.process();
 	};
@@ -85,7 +84,16 @@ socket.on('message', function(data)
 		$(document).on('click','#remove',function()
 		{
 			var link = $(this).closest('tr').children('td:eq(4)').find('a').attr('href');
-			socket.emit('remove', link);
+			$('.modal-title').text('Remove link <strong>'+link+'</strong> ?');
+			$('#myModal').modal('show');
+
+			$('#removeAgreed').click(function(e)
+			{
+				e.preventDefault();
+				$('#myModal').modal('hide');
+				socket.emit('remove', link);
+			})
+			;
 		})
 		;
 	})
