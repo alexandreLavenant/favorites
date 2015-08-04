@@ -8,10 +8,7 @@
  */
 var renderMessage = function(type, message)
 {
-	/* remove previous alert */
-	$('#message').empty();
-
-	$('#message').append('<div class="alert alert-'+type+' alert-dismissible" role="alert">'
+	$('#message').html('<div class="alert alert-'+type+' alert-dismissible" role="alert">'
 	+'<button class="close" aria-label="Close" data-dismiss="alert" type="button">'
 	+'<span aria-hidden="true">x</span>'
 	+'</button>'
