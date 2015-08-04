@@ -102,11 +102,11 @@ io.on('connection', function (socket)
 						if(err) socket.emit('message', { type : 'danger', message : JSON.stringify(err) });
 						if(upsert)
 						{
-							socket.emit('message', { type : 'success', message : 'Url <strong>'+url+'</strong> saved' });
+							socket.emit('message', { type : 'success', message : 'Link <strong>'+url+'</strong> saved' });
 							//update table
 							update(socket);
 						}
-						else socket.emit('message', { type : 'warning', message : 'Url <strong>'+url+'</strong> already in db' });
+						else socket.emit('message', { type : 'warning', message : 'Link <strong>'+url+'</strong> already in db' });
 					})
 					;
 			}
@@ -122,7 +122,7 @@ io.on('connection', function (socket)
 			if(err) socket.emit('message', {type : 'danger', message : JSON.stringify(err)});
 			if(numReplaced > 0)
 			{
-				socket.emit('message', {type : 'success', message : 'Url <strong>'+link+'</strong> removed'});
+				socket.emit('message', {type : 'success', message : 'Link <strong>'+link+'</strong> removed'});
 				// update table
 				update(socket);
 			}

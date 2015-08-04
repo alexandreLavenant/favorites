@@ -83,8 +83,12 @@ socket.on('message', function(data)
 
 		$(document).on('click','#remove',function()
 		{
-			var link = $(this).closest('tr').children('td:eq(4)').find('a').attr('href');
-			$('.modal-title').text('Remove link <strong>'+link+'</strong> ?');
+			var link = $(this).closest('tr').children('td:eq(4)').find('a').attr('href')
+				,title = $(this).closest('tr').children('td:eq(0)').text().replace(' ...','')
+				;
+
+			$('.modal-title').text('Remove this link?');
+			$('.modal-body').html('Do you really want to remove link: <strong>'+title+'</strong> definitely?');
 			$('#myModal').modal('show');
 
 			$('#removeAgreed').click(function(e)
