@@ -8,7 +8,6 @@ var express = require('express')
 	,server = require('http').Server(app)
 	,io = require('socket.io')(server)
 	,db = new Datastore({ filename: 'data/'+(args[0]? args[0] : 'links'), autoload: true })
-	,links = null
 	,port = 8080
 	/**
 	 * get date from epoch time
@@ -110,7 +109,7 @@ io.on('connection', function (socket)
 					})
 					;
 			}
-			else socket.emit('message', { type : 'danger', message : "Can't reach this url" });
+			else socket.emit('message', { type : 'danger', message : "Can't reach this url, "+error });
 		});
 	})
 	;
