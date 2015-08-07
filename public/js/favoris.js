@@ -1,7 +1,18 @@
 /* jshint laxbreak:true, laxcomma : true */
-var socket = io.connect('http://localhost:8080')
+var socket = io.connect('ws://localhost:8080')
 	,dynatable = null
-	/* update table */
+	/**
+	 * generate a unique ID
+	 * @return {string} unique id
+	 */
+	,generateID = function()
+	{
+		return '_' + Math.random().toString(36).substr(2, 9);
+	}
+	/**
+	 * update links table
+	 * @param  {object} datas
+	 */
 	, updateTable = function(datas)
 	{
 		var records = [];
@@ -23,6 +34,12 @@ var socket = io.connect('http://localhost:8080')
 		dynatable.settings.dataset.originalRecords = records;
 		dynatable.process();
 	};
+
+socket.on('connect', function()
+{
+	socket.emit('add user', generateID());
+})
+;
 
 // render table
 socket.on('links', function(datas)
@@ -61,7 +78,7 @@ socket.on('update', function(datas)
 ;
 
 // display message
-socket.on('message', function(data)
+socket.on('new message', function(data)
 {
 	renderMessage(data.type, data.message);
 })

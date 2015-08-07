@@ -7,6 +7,8 @@ var express = require('express')
 	,Datastore = require('nedb')
 	,server = require('http').Server(app)
 	,io = require('socket.io')(server)
+	,users = {}
+	,numUsers = 0
 	,db = new Datastore({ filename: 'data/'+(args[0]? args[0] : 'links'), autoload: true })
 	,port = 8080
 	/**
@@ -68,6 +70,34 @@ console.log('server listen on '+port);
 // socket.io, communication between server and client
 io.on('connection', function (socket)
 {
+	var addedUser = false;
+
+	//new user
+	socket.on('add user', function(userID)
+	{
+		if(! addedUser)
+		{
+			socket.user = userID;
+			users[userID] = userID;
+			++numUsers;
+			addedUser = true;
+			socket.emit('new message',  {type : 'info', message : 'new user joined, total:'+numUsers});
+		}
+	})
+	;
+
+	//user disconnect from the server
+	socket.on('disconnect', function()
+	{
+		if(addedUser)
+		{
+			delete users[socket.user];
+			--numUsers;
+			addedUser = false;
+			socket.emit('new message',  {type : 'info', message : 'user left, total:'+numUsers});
+		}
+	})
+	;
 	//a client wants the favorites
 	socket.on('get links', function()
 	{
@@ -76,7 +106,7 @@ io.on('connection', function (socket)
 			if(err)
 			{
 				console.error(err);
-				socket.emit('message', {type : 'danger', message : err});
+				socket.emit('new message', {type : 'danger', message : err});
 			}
 			else socket.emit('links', docs);
 		});
@@ -111,18 +141,18 @@ io.on('connection', function (socket)
 					if(typeof data.description === 'undefined') data.description = 'None';
 					db.update({ link : url }, data, {upsert : true}, function(err, numReplaced, upsert)
 					{
-						if(err) socket.emit('message', { type : 'danger', message : JSON.stringify(err) });
+						if(err) socket.emit('new message', { type : 'danger', message : JSON.stringify(err) });
 						if(upsert)
 						{
-							socket.emit('message', { type : 'success', message : 'Link <strong>'+url+'</strong> saved' });
+							socket.emit('new message', { type : 'success', message : 'Link <strong>'+url+'</strong> saved' });
 							//update links table
 							update(socket);
 						}
-						else socket.emit('message', { type : 'warning', message : 'Link <strong>'+url+'</strong> already saved!' });
+						else socket.emit('new message', { type : 'warning', message : 'Link <strong>'+url+'</strong> already saved!' });
 					})
 					;
 			}
-			else socket.emit('message', { type : 'danger', message : "Can't reach this url, "+error });
+			else socket.emit('new message', { type : 'danger', message : "Can't reach this url, "+error });
 		});
 	})
 	;
@@ -132,10 +162,10 @@ io.on('connection', function (socket)
 	{
 		db.remove({link : link}, {}, function(err, numReplaced)
 		{
-			if(err) socket.emit('message', {type : 'danger', message : JSON.stringify(err)});
+			if(err) socket.emit('new message', {type : 'danger', message : JSON.stringify(err)});
 			if(numReplaced > 0)
 			{
-				socket.emit('message', {type : 'success', message : 'Link <strong>'+link+'</strong> removed'});
+				socket.emit('new message', {type : 'success', message : 'Link <strong>'+link+'</strong> removed'});
 				// update links table
 				update(socket);
 			}
