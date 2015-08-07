@@ -95,7 +95,8 @@ io.on('connection', function (socket)
 						,link : url
 					}
 					;
-					if(typeof data.description === 'undefined') data.description = "None";
+					if(typeof data.title === 'undefined') data.title = 'None';
+					if(typeof data.description === 'undefined') data.description = 'None';
 					db.update({ link : url }, data, {upsert : true}, function(err, numReplaced, upsert)
 					{
 						if(err) socket.emit('message', { type : 'danger', message : JSON.stringify(err) });
