@@ -38,12 +38,16 @@ var express = require('express')
 
 			return hours+':'+minutes.substr(-2)+':'+seconds.substr(-2);
 		}
+	/**
+	 * update favorites
+	 * @param  {object} socket from socket.io
+	 */
 	, update = function(socket)
 	{
 		db.find({}, function(err, docs)
 		{
 			if(err) console.error(err);
-			else socket.emit('update', docs);
+			else socket.broadcast.emit('update', docs);
 		});
 	}
 	;
@@ -55,6 +59,7 @@ app.get('/', function(req, res) {
 	res.render('index');
 });
 
+//resources (favicon, js and css)
 app.use(express.static('public'));
 
 server.listen(port);
@@ -63,18 +68,25 @@ console.log('server listen on '+port);
 // socket.io, communication between server and client
 io.on('connection', function (socket)
 {
+	//a client wants the favorites
 	socket.on('get links', function()
 	{
 		db.find({}, function(err, docs)
 		{
-			if(err) console.error(err);
+			if(err)
+			{
+				console.error(err);
+				socket.emit('message', {type : 'danger', message : err});
+			}
 			else socket.emit('links', docs);
 		});
 	})
 	;
 
+	//a client wants to save a link
 	socket.on('save', function(url)
 	{
+		//get information from the url given
 		request(url, function(error, response, body)
 		{
 			if (!error && response.statusCode == 200)
@@ -103,10 +115,10 @@ io.on('connection', function (socket)
 						if(upsert)
 						{
 							socket.emit('message', { type : 'success', message : 'Link <strong>'+url+'</strong> saved' });
-							//update table
+							//update links table
 							update(socket);
 						}
-						else socket.emit('message', { type : 'warning', message : 'Link <strong>'+url+'</strong> already in db' });
+						else socket.emit('message', { type : 'warning', message : 'Link <strong>'+url+'</strong> already saved!' });
 					})
 					;
 			}
@@ -115,6 +127,7 @@ io.on('connection', function (socket)
 	})
 	;
 
+	//a client wants to remove a link
 	socket.on('remove', function(link)
 	{
 		db.remove({link : link}, {}, function(err, numReplaced)
@@ -123,7 +136,7 @@ io.on('connection', function (socket)
 			if(numReplaced > 0)
 			{
 				socket.emit('message', {type : 'success', message : 'Link <strong>'+link+'</strong> removed'});
-				// update table
+				// update links table
 				update(socket);
 			}
 		})
