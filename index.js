@@ -85,7 +85,7 @@ io.on('connection', function (socket)
 			users[userID] = userID;
 			++numUsers;
 			addedUser = true;
-			socket.emit('new message',  {type : 'info', message : 'new user joined, total:'+numUsers});
+			socket.broadcast.emit('new message',  {type : 'info', message : 'new user joined, total:'+numUsers});
 		}
 	})
 	;
@@ -98,7 +98,7 @@ io.on('connection', function (socket)
 			delete users[socket.user];
 			--numUsers;
 			addedUser = false;
-			socket.emit('new message',  {type : 'info', message : 'user left, total:'+numUsers});
+			socket.broadcast.emit('new message',  {type : 'info', message : 'user left, total:'+numUsers});
 		}
 	})
 	;
