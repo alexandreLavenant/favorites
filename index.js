@@ -49,7 +49,11 @@ var express = require('express')
 		db.find({}, function(err, docs)
 		{
 			if(err) console.error(err);
-			else socket.broadcast.emit('update', docs);
+			else
+			{
+				socket.emit('update', docs);
+				socket.broadcast.emit('update', docs);
+			}
 		});
 	}
 	;
