@@ -12,3 +12,8 @@ II. Launch Application
 ```js
 node index.js
 ```
+or if you have another database
+
+```js
+node index.js <databaseName>
+```

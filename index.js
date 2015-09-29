@@ -5,6 +5,7 @@ var express = require('express')
 	,request = require('request')
 	,cheerio = require('cheerio')
 	,Datastore = require('nedb')
+	,open = require('open')
 	,server = require('http').Server(app)
 	,io = require('socket.io')(server)
 	,users = {}
@@ -70,7 +71,7 @@ app.use(express.static('public'));
 
 server.listen(port);
 console.log('server listen on '+port);
-
+open('http://localhost:'+port+'/');
 // socket.io, communication between server and client
 io.on('connection', function (socket)
 {
