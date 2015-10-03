@@ -94,6 +94,7 @@ socket.on('new message', function(data)
 		{
 			e.preventDefault();
 			var url = $('#url').val();
+			$('#url').val('');
 			socket.emit('save', url);
 		})
 		;
